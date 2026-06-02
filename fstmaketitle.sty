@@ -1,0 +1,285 @@
+%% fstmaketitle.sty
+%% Copyright (c) 1994-2026 Markus Kohm
+%% Copyright (c) 2026 Marvin Meck
+%
+% This file is derived from KOMA-Script's scrbook.cls,
+% generated from scrkernel-title.dtx and related source files.
+%
+% Modifications by Marvin Meck:
+% - extracted title page generation into \@maketitle
+% - allows package and user-level redefinition of \@maketitle
+%   while preserving KOMA-Script title features
+% - adapted for use by fstdiss.sty
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%   https://www.latex-project.org/lppl.txt
+%
+% This work has the LPPL maintenance status `author-maintained'.
+%
+% The Current Maintainer of this work is Marvin Meck.
+
+% see scrbook.cls lines 3105 to 3136: 
+\newcommand{\KOMAtitle}{
+  \setparsizes{\z@}{\z@}{\z@\@plus 1fil}\par@updaterelative
+  \ifx\@titlehead\@empty \else
+    \begin{minipage}[t]{\textwidth}%
+      \usekomafont{titlehead}{\@titlehead\par}%
+    \end{minipage}\par
+  \fi
+  \null\vfill
+  \begin{center}
+    \ifx\@subject\@empty \else
+      {\usekomafont{subject}{\@subject\par}}%
+      \vskip 3em
+    \fi
+    {\usekomafont{title}{\huge \@title\par}}%
+    \vskip 1em
+    {\ifx\@subtitle\@empty\else\usekomafont{subtitle}{\@subtitle\par}\fi}%
+    \vskip 2em
+    {%
+      \usekomafont{author}{%
+        \lineskip 0.75em
+        \begin{tabular}[t]{c}
+          \@author
+        \end{tabular}\par
+      }%
+    }%
+    \vskip 1.5em
+    {\usekomafont{date}{\@date \par}}%
+    \vskip \z@ \@plus3fill
+    {\usekomafont{publishers}{\@publishers \par}}%
+    \vskip 3em
+  \end{center}\par
+  \@thanks\global\let\@thanks\@empty
+  \vfill\null
+}
+
+\renewcommand\@maketitle{\KOMAtitle}
+
+% see scrbook.cls lines 3042 to 3295: 
+\renewcommand*\maketitle[1][1]{%
+  \expandafter\ifnum \scr@v@is@ge{3.12}%
+    \def\and{%
+      \end{tabular}%
+      \hskip 1em \@plus.17fil%
+      \begin{tabular}[t]{c}%
+    }%
+  \fi
+  \if@titlepage
+    \begin{titlepage}
+      \setcounter{page}{%
+        #1%
+      }%
+      \if@titlepageiscoverpage
+        \edef\titlepage@restore{%
+          \noexpand\endgroup
+          \noexpand\global\noexpand\@colht\the\@colht
+          \noexpand\global\noexpand\@colroom\the\@colroom
+          \noexpand\global\vsize\the\vsize
+          \noexpand\global\noexpand\@titlepageiscoverpagefalse
+          \noexpand\let\noexpand\titlepage@restore\noexpand\relax
+        }%
+        \begingroup
+        \topmargin=\dimexpr \coverpagetopmargin-1in\relax
+        \oddsidemargin=\dimexpr \coverpageleftmargin-1in\relax
+        \evensidemargin=\dimexpr \coverpageleftmargin-1in\relax
+        \textwidth=\dimexpr
+        \paperwidth-\coverpageleftmargin-\coverpagerightmargin\relax
+        \textheight=\dimexpr
+        \paperheight-\coverpagetopmargin-\coverpagebottommargin\relax
+        \headheight=0pt
+        \headsep=0pt
+        \footskip=\baselineskip
+        \@colht=\textheight
+        \@colroom=\textheight
+        \vsize=\textheight
+        \columnwidth=\textwidth
+        \hsize=\columnwidth
+        \linewidth=\hsize
+      \else
+        \let\titlepage@restore\relax
+      \fi
+      \let\footnotesize\small
+      \let\footnoterule\relax
+      \let\footnote\thanks
+      \renewcommand*\thefootnote{\@fnsymbol\c@footnote}%
+      \let\@oldmakefnmark\@makefnmark
+      \renewcommand*{\@makefnmark}{\rlap\@oldmakefnmark}%
+      \ifx\@extratitle\@empty
+        \ifx\@frontispiece\@empty
+        \else
+          \if@twoside\mbox{}\next@tpage\fi
+          \noindent\@frontispiece\next@tdpage
+        \fi
+      \else
+        \noindent\@extratitle
+        \ifx\@frontispiece\@empty
+        \else
+          \next@tpage
+          \noindent\@frontispiece
+        \fi
+        \next@tdpage
+      \fi
+      \@maketitle
+      \if@twoside
+        \@tempswatrue
+        \expandafter\ifnum \scr@v@is@ge{3.12}%
+          \ifx\@uppertitleback\@empty\ifx\@lowertitleback\@empty
+            \@tempswafalse
+          \fi\fi
+        \fi
+        \if@tempswa
+          \next@tpage
+          \begin{minipage}[t]{\textwidth}
+            \@uppertitleback
+          \end{minipage}\par
+          \vfill
+          \begin{minipage}[b]{\textwidth}
+            \@lowertitleback
+          \end{minipage}\par
+          \@thanks\global\let\@thanks\@empty
+        \fi
+      \else
+        \ifx\@uppertitleback\@empty\else
+          \ClassWarning{\KOMAClassName}%
+          {%
+            non empty \string\uppertitleback\space ignored
+            by \string\maketitle\MessageBreak
+            in `twoside=false' mode%
+          }%
+        \fi
+        \ifx\@lowertitleback\@empty\else
+          \ClassWarning{\KOMAClassName}%
+          {%
+            non empty \string\lowertitleback\space ignored
+            by \string\maketitle\MessageBreak
+            in `twoside=false' mode%
+          }%
+        \fi
+      \fi
+      \ifx\@dedication\@empty
+      \else
+        \next@tdpage\null\vfill
+        {\centering\usekomafont{dedication}{\@dedication \par}}%
+        \vskip \z@ \@plus3fill
+        \@thanks\global\let\@thanks\@empty
+        \cleardoubleemptypage
+      \fi
+      \ifx\titlepage@restore\relax\else\clearpage\titlepage@restore\fi
+    \end{titlepage}
+  \else
+    \par
+    \@tempcnta=%
+    #1%
+    \relax\ifnum\@tempcnta=1\else
+      \ClassWarning{\KOMAClassName}%
+      {%
+        Optional argument of \string\maketitle\space ignored\MessageBreak
+        in `titlepage=false' mode%
+      }%
+    \fi
+    \ifx\@uppertitleback\@empty\else
+      \ClassWarning{\KOMAClassName}%
+      {%
+        non empty \string\uppertitleback\space ignored
+        by \string\maketitle\MessageBreak
+        in `titlepage=false' mode%
+      }%
+    \fi
+    \ifx\@lowertitleback\@empty\else
+      \ClassWarning{\KOMAClassName}%
+      {%
+        non empty \string\lowertitleback\space ignored
+        by \string\maketitle\MessageBreak
+        in `titlepage=false' mode%
+      }%
+    \fi
+    \begingroup
+      \let\titlepage@restore\relax
+      \renewcommand*\thefootnote{\@fnsymbol\c@footnote}%
+      \let\@oldmakefnmark\@makefnmark
+      \renewcommand*{\@makefnmark}{\rlap\@oldmakefnmark}%
+      \next@tdpage
+      \if@twocolumn
+        \ifnum \col@number=\@ne
+          \ifx\@extratitle\@empty
+            \ifx\@frontispiece\@empty\else\if@twoside\mbox{}\fi\fi
+          \else
+            \@makeextratitle
+          \fi
+          \ifx\@frontispiece\@empty
+            \ifx\@extratitle\@empty\else\next@tdpage\fi
+          \else
+            \next@tpage
+            \@makefrontispiece
+            \next@tdpage
+          \fi
+          \@maketitle
+        \else
+          \ifx\@extratitle\@empty
+            \ifx\@frontispiece\@empty\else\if@twoside\mbox{}\fi\fi
+          \else
+            \twocolumn[\@makeextratitle]%
+          \fi
+          \ifx\@frontispiece\@empty
+            \ifx\@extratitle\@empty\else\next@tdpage\fi
+          \else
+            \next@tpage
+            \twocolumn[\@makefrontispiece]%
+            \next@tdpage
+          \fi
+          \twocolumn[\@maketitle]%
+        \fi
+      \else
+        \ifx\@extratitle\@empty
+          \ifx\@frontispiece\@empty\else \mbox{}\fi
+        \else
+          \@makeextratitle
+        \fi
+        \ifx\@frontispiece\@empty
+          \ifx\@extratitle\@empty\else\next@tdpage\fi
+        \else
+          \next@tpage
+          \@makefrontispiece
+          \next@tdpage
+        \fi
+        \@maketitle
+      \fi
+      \ifx\titlepagestyle\@empty\else\thispagestyle{\titlepagestyle}\fi
+      \@thanks\global\let\@thanks\@empty
+    \endgroup
+  \fi
+  \setcounter{footnote}{0}%
+  \expandafter\ifnum \scr@v@is@lt{3.12}%
+    \let\thanks\relax
+    \let\maketitle\relax
+    \let\@maketitle\relax
+    \global\let\@thanks\@empty
+    \global\let\@author\@empty
+    \global\let\@date\@empty
+    \global\let\@title\@empty
+    \global\let\@subtitle\@empty
+    \global\let\@extratitle\@empty
+    \global\let\@frontispiece\@empty
+    \global\let\@titlehead\@empty
+    \global\let\@subject\@empty
+    \global\let\@publishers\@empty
+    \global\let\@uppertitleback\@empty
+    \global\let\@lowertitleback\@empty
+    \global\let\@dedication\@empty
+    \global\let\author\relax
+    \global\let\title\relax
+    \global\let\extratitle\relax
+    \global\let\titlehead\relax
+    \global\let\subject\relax
+    \global\let\publishers\relax
+    \global\let\uppertitleback\relax
+    \global\let\lowertitleback\relax
+    \global\let\dedication\relax
+    \global\let\date\relax
+  \fi
+  \global\let\and\relax
+}%

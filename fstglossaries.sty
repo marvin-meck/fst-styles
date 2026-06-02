@@ -1,0 +1,83 @@
+%% fstglossaries.sty
+%% Copyright (c) 2026 Marvin Meck
+%
+% Glossary styles in this package were adapted from documented
+% examples in glossaries-extra v2.1 by Nicola Talbot.
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%   https://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX
+% version 2008 or later.
+%
+% This work has the LPPL maintenance status `author-maintained'.
+%
+% The Current Maintainer of this work is Marvin Meck.
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{fstglossaries}[2026/06/02 defines FST-style glossaries]
+
+\RequirePackage{glossaries-extra}
+\RequirePackage{enumitem}
+
+\newglossarystyle{fstmcol}{%
+  \renewenvironment{theglossary}{%
+    \begin{description}[labelwidth=\dimexpr0.1\textwidth+\tabcolsep\relax,nosep]}%
+    {\end{description}}
+  \renewcommand*{\glossaryheader}{}
+  \renewcommand*{\glossentry}[2]{%
+    \item[\glstarget{##1}{\glossentryname{##1}}]%   Name
+    \glossentrydesc{##1}%                       %   Description 
+    \setbox0=\hbox{##2\unskip}\ifdim\wd0=0pt
+      %
+    \else
+      ; \emph{see} page(s) ##2.%                %   Page list
+    \fi
+  }
+}
+
+\newglossarystyle{fstlong2col}{%
+  \setglossarystyle{long}
+  \renewenvironment{theglossary}{%
+    \begin{longtable}{@{}p{0.1\textwidth}p{\dimexpr0.9\textwidth-2\tabcolsep\relax}@{}}}%
+    {\end{longtable}}%
+    \renewcommand*{\glossaryheader}{}
+    \renewcommand*{\glossentry}[2]{%
+    \glstarget{##1}{\glossentryname{##1}}%    % Name
+    & \glossentrydesc{##1}%                   % Description 
+    \setbox0=\hbox{##2\unskip}\ifdim\wd0=0pt
+      %
+    \else
+      ; \emph{see} page(s) ##2.%               % Page list
+    \fi
+    \tabularnewline
+  }
+}
+
+\newglossarystyle{fstlong3col}{%
+  \setglossarystyle{long3col}
+  \renewenvironment{theglossary}{%
+    \begin{longtable}{@{}p{0.1\textwidth}p{0.625\textwidth}p{\dimexpr0.275\textwidth-4\tabcolsep\relax}@{}}
+    }%
+    {\end{longtable}}%
+  %
+  \renewcommand*{\glossaryheader}{%
+    \usekomafont{disposition}Symbol & 
+    \usekomafont{disposition}Description & 
+    \usekomafont{disposition}Dimension \\[0.5cm]
+    \endhead
+  }
+  \renewcommand*{\glossentry}[2]{%
+    \glstarget{##1}{\glossentryname{##1}}%    % Name
+    & \glossentrydesc{##1}%                   % Description 
+    \setbox0=\hbox{##2\unskip}\ifdim\wd0=0pt 
+      % don't print anything
+    \else
+      ; \emph{see} page(s) ##2%               % Page list
+    \fi
+    & \glsentryuserii{##1}%                   % Dimension
+    \tabularnewline
+  }
+}

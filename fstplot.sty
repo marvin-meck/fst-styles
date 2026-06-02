@@ -1,0 +1,173 @@
+%% fstplot.sty
+%% Copyright (c) 2026 Marvin Meck
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%   https://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX
+% version 2008 or later.
+%
+% This work has the LPPL maintenance status `author-maintained'.
+%
+% The Current Maintainer of this work is Marvin Meck.
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{fstplot}[2026/03/23 FST-style plotting with pgfplots]
+
+\newif\ifsansmath
+\newif\ifitalic\italicfalse
+% \newif\ifcaps\captrue
+
+\DeclareOption{sansmath}{\sansmathtrue}
+\DeclareOption{italic}{\italictrue}
+% \DeclareOption{caps}{\capstrue}
+\DeclareOption{default}{\sansmathfalse\italicfalse}
+
+% Defaults
+\ExecuteOptions{default}
+
+% Process options
+\ProcessOptions\relax
+
+% Default package loading
+\RequirePackage{tikz}
+\usetikzlibrary{
+    arrows, 
+    arrows.meta, 
+}
+
+\RequirePackage{pgfplots}
+
+% Conditional package loading
+\ifsansmath
+  \RequirePackage{sansmath}
+\fi
+
+% Settings
+\tikzset{
+  >={Triangle[angle=15:0pt 10.086]},% round
+}
+
+\pgfplotsset{compat=1.18}
+\pgfplotsset{%
+  /pgfplots/FstAxisStyle/.style={
+    every non boxed x axis/.append style={
+      x axis line style={->}
+    },
+    every non boxed y axis/.append style={
+      y axis line style={->}
+    },
+    every non boxed z axis/.append style={
+      z axis line style={->}
+    },
+    tick align=outside,
+    major tick length=0.2cm,
+    minor tick length=0.1cm,
+    /pgf/number format/1000 sep={},
+    /pgfplots/use units={true},
+    tick scale binop=\times,
+    /pgfplots/unit marking pre={\text{in~}},
+    /pgfplots/unit marking post=,
+    % every axis plot post/.append style={line width=0.6pt},
+    /pgfplots/axis line style/.append style={semithick},
+    /pgfplots/every tick/.append style={
+      color=black,
+      semithick,
+    }
+    % every axis/.style={semithick},
+  },
+  /pgfplots/FstFontStyle1/.append style={
+    /tikz/font=\sansmath\sffamily
+  },
+  /pgfplots/FstFontStyle2/.append style={
+    /tikz/font=\sansmath\sffamily\itshape
+  }
+}
+
+
+\pgfplotsset{%
+  every axis/.append style={%
+    FstAxisStyle,
+  }
+}
+
+\ifsansmath
+  \pgfplotsset{%
+    every axis/.append style={%
+      FstFontStyle2
+    }
+}
+\fi 
+
+\ifitalic
+\pgfplotsset{%
+  every axis/.append style={%
+    FstFontStyle2
+  }
+}
+\fi 
+
+\pgfplotscreateplotcyclelist{fst black white}{
+  {%
+    solid, 
+    mark=*, 
+    every mark/.append style={draw=black, fill=black},
+    mark size=2pt
+  },
+  {%
+    solid, 
+    mark=triangle*,
+    every mark/.append style={rotate=180, draw=black, fill=white},
+    mark size=2.5pt
+  },
+  {%
+    solid, 
+    mark=triangle*,
+    every mark/.append style={rotate=0, draw=black, fill=white},
+    mark size=2.5pt
+  },
+  {%
+    solid, 
+    mark=square*,
+    every mark/.append style={rotate=0, draw=black, fill=white},
+    mark size=2pt
+  },
+  {%
+    solid, 
+    mark=triangle*,
+    every mark/.append style={rotate=180, draw=black, fill=TUDa-0a},
+    mark size=2.5pt
+  },
+  {%
+    solid, 
+    mark=triangle*,
+    every mark/.append style={rotate=0, draw=black, fill=TUDa-0a},
+    mark size=2.5pt
+  },
+  {%
+    solid, 
+    mark=square*,
+    every mark/.append style={rotate=0, draw=black, fill=TUDa-0a},
+    mark size=2pt
+  },
+  {%
+    solid, 
+    mark=triangle*,
+    every mark/.append style={rotate=180, draw=black, fill=black},
+    mark size=2.5pt
+  },
+  {%
+    solid, 
+    mark=triangle*,
+    every mark/.append style={rotate=0, draw=black, fill=black},
+    mark size=2.5pt
+  },
+  {%
+    solid, 
+    mark=square*,
+    every mark/.append style={rotate=0, draw=black, fill=black},
+    mark size=2pt
+  },
+}

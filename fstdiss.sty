@@ -1,0 +1,281 @@
+%% fstdiss.sty
+%% Copyright (c) 2026 Marvin Meck
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%   https://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX
+% version 2008 or later.
+%
+% This work has the LPPL maintenance status `author-maintained'.
+%
+% The Current Maintainer of this work is Marvin Meck.
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{fstdiss}[2026/06/02 FST thesis package]
+
+% Declare options --------------------------------------------------------------
+\newif\ifaccepted
+\newif\ifdraft
+
+% Declare options 
+\DeclareOption{accepted}{\acceptedtrue}
+\DeclareOption{draft}{\drafttrue}
+\DeclareOption{manuscript}{\acceptedfalse}
+
+% Process options --------------------------------------------------------------
+\ExecuteOptions{manuscript}
+\ProcessOptions\relax
+
+% Package loading --------------------------------------------------------------
+\ifdraft
+  \RequirePackage{xparse}
+  \RequirePackage{layouts}
+  \RequirePackage{todonotes}
+
+  \presetkeys{todonotes}{color=white, bordercolor=red, linecolor=black}{}
+
+  \newcount\loglevel
+    \loglevel=2
+
+  \newcommand{\IfLogLevelAtLeast}[2]{%
+    \ifnum\loglevel<#1\relax
+      % do nothing
+    \else
+      #2%
+    \fi
+  }
+
+  \newcommand{\feedback}[2]{%
+    \IfLogLevelAtLeast{1}{\TodoNotesTodo[prepend, caption={\textbf{@#1}}, color=green!40, bordercolor=black, linecolor=black]{#2}}
+  }
+  
+  % Keep the real \todo from todonotes, but gate it by loglevel>=1
+  \let\TodoNotesTodo\todo
+  \RenewDocumentCommand{\todo}{O{}m}{%
+    \IfLogLevelAtLeast{1}{\TodoNotesTodo[#1]{#2}}%
+  }
+
+  % note macro: gated by loglevel>=2
+  \NewDocumentCommand{\note}{O{}m}{%
+    \IfLogLevelAtLeast{2}{%
+      \TodoNotesTodo[
+        color=yellow!40,
+        linecolor=black,
+        bordercolor=black,
+        prepend,
+        caption={\textbf{Note}},
+        #1
+      ]{#2}%
+    }%
+  }
+\else
+  \NewDocumentCommand{\todo}{O{}m}{}%
+  \NewDocumentCommand{\feedback}{O{}m}{}%
+  \NewDocumentCommand{\note}{O{}m}{}%
+\fi
+
+% Default package loading
+\RequirePackage{lmodern}
+\RequirePackage{xstring}
+\RequirePackage[datesep=.,ngerman,british]{datetime2}
+  \DTMsetdatestyle{ddmmyyyy}
+
+\RequirePackage[inline]{enumitem}
+  \newlist{fstEnum}{enumerate*}{1}
+  \setlist[fstEnum]{
+    label=(\roman*), 
+  }
+
+  \newlist{questions}{enumerate}{1}
+  \setlist[questions,1]{label=RQ\arabic*.,ref=RQ\arabic*, font=\itshape, align=left, before=\itshape, after=\upshape}
+
+% Titlepage --------------------------------------------------------------------
+\RequirePackage{fstmaketitle}
+\RequirePackage[letterspace=150]{microtype}
+
+\newcommand*{\firstadvisor}[1]{\gdef\@firstadvisor{#1}}
+\newcommand*{\@firstadvisor}{\texttt{\string\firstadvisor} currently not set. Please fix this.}
+
+\newcommand*{\secondadvisor}[1]{\gdef\@secondadvisor{#1}}
+\newcommand*{\@secondadvisor}{\texttt{\string\secondadvisor} currently not set. Please fix this.}
+
+\newcommand*{\dateofbirth}[1]{\gdef\@dateofbirth{#1}}
+\newcommand*{\@dateofbirth}{\texttt{\string\dateofbirth} currently not set. Please fix this.}
+
+\newcommand*{\placeofbirth}[1]{\gdef\@placeofbirth{#1}}
+\newcommand*{\@placeofbirth}{\texttt{\string\placeofbirth} currently not set. Please fix this.}
+
+\newcommand*{\submissiondate}[1]{%
+  \DTMsavedate{submission}{#1}
+  \DTMmakeglobal{submission}
+  \gdef\@submissiondate{\DTMusedate{submission}}
+}
+\newcommand*{\@submissiondate}{\texttt{\string\submissiondate} currently not set. Please fix this.}
+
+\newcommand*{\dateofexam}[1]{
+  \DTMsavedate{exam}{#1}
+  \DTMmakeglobal{exam}
+  \gdef\@dateofexam{\DTMusedate{exam}}
+}
+\newcommand*{\@dateofexam}{\texttt{\string\dateofexam} currently not set. Please fix this.}
+
+\providecommand{\titlepagestyle}{empty}
+
+\providecommand{\TUDaTitle}{%
+    \setparsizes{\z@}{\z@}{\z@\@plus 1fil}\par@updaterelative
+    \begin{center}
+    \vspace*{\dimexpr 3\bigskipamount\relax}
+    % {\usekomafont{title}\Huge\@title\par}
+    {\huge\textbf{\@title}\par}
+    % {\ifx\@subtitle\@empty\else\usekomafont{subtitle}{\@subtitle\par}\fi}%
+    {\ifx\@subtitle\@empty\else{\@subtitle\par}\fi}%
+   \vspace{\dimexpr 3\bigskipamount\relax}
+    
+    \ifaccepted{
+      \large
+      Vom Fachbereich Maschinenbau\linebreak
+      an der Technischen Universität Darmstadt\linebreak
+      zur Erlangung des Grades eines\vspace{\bigskipamount}\linebreak
+      Doktor-Ingenieurs\linebreak
+      (Dr.-Ing.)\vspace{\dimexpr 3\bigskipamount\relax}\linebreak
+      genehmigte\vspace{\bigskipamount}\linebreak
+      {\lsstyle\Large\textsc{\@subject}}\vspace{\dimexpr 2\bigskipamount\relax}\linebreak
+    }
+    \else{
+      \large
+      Dem Fachbereich Maschinenbau\linebreak
+      an der Technischen Universität Darmstadt\linebreak
+      zur Erlangung des Grades eines\vspace{\bigskipamount}\linebreak
+      Doktor-Ingenieurs\linebreak
+      (Dr.-Ing.)\vspace{\dimexpr 3\bigskipamount\relax}\linebreak
+      eingereichte\bigskip\linebreak
+      {\lsstyle\Large\textsc{\@subject}}\vspace{\dimexpr 2\bigskipamount\relax}\par
+    }
+    \fi
+    {
+      \large
+      vorgelegt von\vspace{\bigskipamount}\linebreak
+      {\textbf\@author{}}\vspace{\bigskipamount}\linebreak
+      geboren am {\@dateofbirth{}}\linebreak
+      in {\@placeofbirth{}}
+    }
+    \vfill
+
+    \begin{tabular}{ll}
+      Berichterstatter:               & {\@firstadvisor}\\
+      Mitberichterstatter:            & {\@secondadvisor}\\
+      Tag der Einreichung:            & {\@submissiondate}\\
+      Tag der m\"undlichen Pr\"ufung: & {\@dateofexam}\\
+    \end{tabular}
+    \vspace{\dimexpr 2\bigskipamount\relax}
+
+    Darmstadt~\DTMfetchyear{exam}\par
+    D17\par
+  \end{center}%
+}
+
+\renewcommand\@maketitle{\TUDaTitle}
+
+\providecommand{\BibInfo}{%
+  \parbox{\textwidth}{%
+    \sffamily
+    \textbf{Bibliographic Information}\par\medskip
+    \raggedright
+    \emph{\@author}: \par
+    \@title / \@author\ 
+    --~Darmstadt, Techn. Univ., Diss., \DTMfetchyear{exam}
+  }%
+}
+
+\providecommand{\CiteAs}{%
+  \parbox{\textwidth}{%
+    \sffamily
+    \textbf{When referencing this work, please cite as:}\par\medskip
+    \raggedright
+    \@author\ (\DTMfetchyear{exam}): "\@title{}". 
+    PhD thesis (under review). Technische Universität Darmstadt. 
+  }%
+}
+
+\NewDocumentCommand{\TUDaTitleBackA}{o}{%
+  \parbox{\textwidth}{%
+    \sffamily
+    \raggedright
+    \begin{german}
+      \@author\ : \@title{}\linebreak
+      Darmstadt, Technische Universität Darmstadt,\linebreak
+      Jahr der Veröffentlichung der Dissertation auf TUprints: \DTMfetchyear{exam}\linebreak
+      \IfValueT{#1}{URN: {#1} \linebreak}
+      Tag der mündlichen Prüfung: {\@dateofexam}\par\bigskip
+      Veröffentlicht unter \doclicenseName\linebreak
+      \textsl{\doclicenseURL}\par%
+    \end{german}
+  }%
+}
+
+\NewDocumentCommand{\FstImprint}{o}{%
+  \sffamily
+  \raggedright
+  \textcopyright\ \DTMfetchyear{exam} \@author\par 
+  This work is licensed under \doclicenseName~\doclicenseIcon\par
+  \medskip
+  %
+  \IfValueT{#1}{#1}
+  %
+  Advised by \@firstadvisor{} and \@secondadvisor{}.\par
+  \medskip
+  % This dissertation was published electronically via TUprints.\par
+  % URN: \texttt{urn:nbn:de:tuda-tuprints-xxxxx}\par\medskip
+  % \centering
+  Technische Universität Darmstadt \textbullet~{Institut für Fluidsystemtechnik}
+  \linebreak
+  Otto-Berndt-Straße 2 \textbullet~{64287 Darmstadt} \textbullet~Tel.:~{+49 6151 16-27101}
+  \linebreak
+  % Internet:~\url{https://www.fst.tu-darmstadt.de} 
+  % \linebreak 
+  E-Mail:~\texttt{sekretariat@fst.tu-darmstadt.de}\par%\medskip 
+}
+
+%% The following macros are adapted from the tuda-ci package
+%% Copyright (c) 2018--2025 by Marei Peischl <marei@peitex.de>
+% see tuda-ci.dtx lines 3708 to 3790 -->
+\NewDocumentCommand{\@signature}{o}{
+  \noindent
+  \begin{minipage}[t]{0.5\linewidth}
+    Darmstadt,~\@submissiondate
+  \end{minipage}%
+  \hfill
+  \begin{minipage}[t]{5cm}
+    \centering
+    \IfValueT{#1}{\includegraphics[height=1.5cm]{#1}}\par\nointerlineskip
+    \rule{\linewidth}{.3pt}\\
+    \@author
+  \end{minipage}
+}
+
+\NewDocumentCommand{\affidavit}{o}{
+  \chapter*{Erklärungen laut Promotionsordnung}
+  \thispagestyle{empty}
+
+  \section*{\S\,8 Abs. 1 lit. d PromO}
+
+  Ich versichere hiermit, dass zu einem vorherigen Zeitpunkt noch keine Promotion versucht wurde. 
+  In diesem Fall sind nähere Angaben über Zeitpunkt, Hochschule, Dissertationsthema und Ergebnis dieses Versuchs mitzuteilen.
+
+  \section*{\S\,9 Abs. 1 PromO}
+
+  Ich versichere hiermit, dass die vorliegende Dissertation -- abgesehen von den in ihr ausdrücklich genannten Hilfen -- selbstständig verfasst wurde 
+  und dass die "Grundsätze zur Sicherung guter wissenschaftlicher Praxis an der Technischen Universität Darmstadt" 
+  und die "Leitlinien zum Umgang mit digitalen Forschungsdaten an der TU Darmstadt" in den jeweils aktuellen Versionen bei der Verfassung der Dissertation beachtet wurden.
+
+  \section*{\S\,9 Abs. 2 PromO}
+  
+  Die Arbeit hat bisher noch nicht zu Prüfungszwecken gedient.
+
+  \vfill
+  \IfValueT{#1}{\@signature[#1]}{\@signature}
+}
+% <--
