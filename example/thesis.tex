@@ -1,0 +1,170 @@
+%% example/thesis.tex
+%% Copyright (c) 2026 Marvin Meck
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%   https://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX
+% version 2008 or later.
+%
+% This work has the LPPL maintenance status `author-maintained'.
+%
+% The Current Maintainer of this work is Marvin Meck.
+\documentclass[
+  a4paper,
+  fontsize=11pt,
+  twoside,
+  titlepage=firstiscover,
+  numbers=noenddot,
+]{scrbook}
+
+\KOMAoption{chapterprefix}{true}
+
+\usepackage[manuscript]{fstdiss}
+
+\usepackage{polyglossia}
+  \setdefaultlanguage{english}
+  \setotherlanguages{german}
+
+\usepackage{blindtext}
+
+\usepackage{hyperref}
+\usepackage{epigraph}
+  \setlength\epigraphrule{0pt}
+  \setlength\epigraphwidth{.8\textwidth}
+
+\usepackage{csquotes}
+\usepackage[
+  backend=biber,
+  style=authoryear-ibid,
+  natbib=true,
+  mcite=false,
+  casechanger=auto,
+]{biblatex}
+
+% \usepackage[tikzfigures]{thesis}
+% \usepackage{notation}
+
+\usepackage[
+  type={CC},
+  modifier={by-nc},
+  version={4.0}
+]{doclicense}
+
+\addbibresource{references.bib}
+
+\addtocategory{publications}{%
+  Pelz.2021b,
+  Meck.2023a,
+  Meck.2024a,
+}
+
+\subject{Beispiel}
+
+\title{%
+  FST styles: \LaTeX{} template for dissertations%
+}
+
+\author{Marvin Meck}
+\dateofbirth{08.03.1994}
+\placeofbirth{Bad Soden am Taunus}
+
+\submissiondate{2026-00-00}
+\dateofexam{2026-13-01}
+
+\firstadvisor{Prof. Dr.-Ing. Peter F. Pelz}
+\secondadvisor{Prof. Dr.-Ing. Korreferent}
+
+\makeatletter
+\renewcommand{\@posttitle}{
+  Dem Institut für Fluidsystemtechnik\linebreak
+  an der Technischen Universität Darmstadt\linebreak
+  zur Unterstützung beim Schreiben der
+}
+\renewcommand{\@degree}{Dissertation}
+\renewcommand{\@degreeshort}{Diss.}
+\renewcommand{\@presubject}{vorgelegtes}
+\renewcommand{\@postname}{aus Darmstadt}
+\makeatother
+
+% Half-title
+\extratitle{}
+
+% Verso of the half-title 
+\frontispiece{}
+
+% Copyright page
+\makeatletter
+\renewcommand{\@CiteAs}{%
+  \@author\ (\DTMfetchyear{exam}): "\@title{}".
+}
+\makeatother
+
+\uppertitleback{\framebox{\CiteAs}}
+\lowertitleback{%
+  \FstImprint[%
+    This book was typeset by the author using \KOMAScript{} and \LaTeX{}.\linebreak
+    The source code and a compiled PDF are available online:
+    \begin{quote}
+      \url{https://github.com/marvin-meck/fst-styles}
+    \end{quote}
+  ]
+}
+
+\dedication{%
+  \epigraph{%
+    I have a masters and two PhDs. 
+    I should not have to do this.
+  }{Sheldon Cooper, \textit{The Big Bang Theory S1-E2}}
+}
+
+\begin{document}
+
+  \frontmatter
+  \maketitle
+  \affidavit%[scans/signature.pdf]
+
+  \nocite{Pelz.2021a,Pelz.2021b}
+
+  \ifaccepted
+    \include{text/frontmatter/01_Foreword}
+  \fi
+  \include{text/frontmatter/02_Preface}
+  \include{text/frontmatter/03_Acknowledgements}
+
+  \include{text/frontmatter/04_Abstract}
+
+  \tableofcontents
+  \listoffigures
+  \listoftables
+
+%   \include{text/frontmatter/05_Nomenclature}
+
+  \mainmatter
+  \include{text/mainmatter/01_Introduction/chapter}
+%   \include{text/mainmatter/02_Literature/chapter}
+%   \include{text/mainmatter/03_Methods/chapter}
+%   \include{text/mainmatter/04_Results/chapter}
+%   \include{text/mainmatter/05_Discussion/chapter}
+%   \include{text/mainmatter/06_Conclusion/chapter}
+  
+%   \backmatter
+  \printbibheading[heading=bibintoc]
+  
+  \printbibliography[
+    notcategory={publications},
+    heading=none,
+  ]
+
+  \printbibliography[
+    category={publications},
+    heading=subbibliography,
+    title={Own publications cited in this work}
+  ]
+
+  \appendix
+%   \include{text/appendix/01_Research_Data_Management}
+
+\end{document}

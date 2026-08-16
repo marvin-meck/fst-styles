@@ -1,0 +1,65 @@
+## example/latexmkrc
+## Copyright (c) 2026 Marvin Meck
+#
+# This work may be distributed and/or modified under the
+# conditions of the LaTeX Project Public License, either version 1.3
+# of this license or (at your option) any later version.
+# The latest version of this license is in
+#   https://www.latex-project.org/lppl.txt
+# and version 1.3c or later is part of all distributions of LaTeX
+# version 2008 or later.
+#
+# This work has the LPPL maintenance status `author-maintained'.
+#
+# The Current Maintainer of this work is Marvin Meck.
+# $silent=1;
+# $silence_logfile_warnings=1;
+$MSWin_back_slash=0;               # MS windows back slashes
+$out_dir="build";                  # output to build subdirectory
+$pdf_mode=4;                       # lualatex
+$bibtex_use = 2;                   # biblatex
+$emulate_aux=1;                    # TeX Live doesn't support aux-dir
+ensure_path('TEXINPUTS', '..');    # template style files
+
+# create subdirectories so lualatex can write aux files
+system ("find . -type d ! -path './.git*' ! -path './$out_dir*' ! -path './.vscode*' -exec mkdir -p $out_dir/{} \\;");
+
+add_cus_dep('aux', 'glstex', 0, 'run_bib2gls');
+
+# bib2gls ----------------------------------------------------------------------
+
+# From https://tex.stackexchange.com/questions/400325/latexmkrc-for-bib2gls -->
+push @generated_exts, 'glstex', '-1.glstex', 'glg', 'run.xml';
+
+sub run_bib2gls {
+  my $path = $_[0];
+  my $base = basename($path);
+  my $dir = dirname($path);
+  my $silent_command = $silent ? "--silent" : "";
+  if ( $dir ) {
+    my $ret = system("bib2gls $silent_command -d $dir $base");
+  } else {
+    my $ret = system("bib2gls $silent_command $base");
+  };
+  # Analyze log file.
+  local *LOG;
+  $LOG = "$_[0].glg";
+  if (!$ret && -e $LOG) {
+    open LOG, "<$LOG";
+    while (<LOG>) {
+      if (/^Reading (.*\.bib)\s$/) {
+        rdb_ensure_file( $rule, $1 );
+      }
+    }
+    close LOG;
+  }
+  return $ret;
+}
+# <--
+
+# Clean ------------------------------------------------------------------------
+# $clean_full_ext = 'glstex'; doesn't clean main-1.glstex
+my $c_flag = grep { /^-c$/i } @ARGV;
+if ($c_flag) {
+    system("rm $out_dir/*.glstex");
+}
