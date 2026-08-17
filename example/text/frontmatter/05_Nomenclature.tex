@@ -1,0 +1,61 @@
+%% example/text/frontmatter/05_Nomenclature.tex
+%% Copyright (c) 2026 Marvin Meck
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%   https://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX
+% version 2008 or later.
+%
+% This work has the LPPL maintenance status `author-maintained'.
+%
+% The Current Maintainer of this work is Marvin Meck.
+\begingroup
+\renewcommand{\glossarysection}[2][]{}
+
+\chapter*{Nomenclature}
+
+The following summarizes the notation adopted throughout this work and lists the symbols and abbreviations used. 
+Standard conventions are followed where possible, and any deviations are introduced where they occur. 
+
+\section*{General notation}
+
+\blindtext[1]
+
+\section*{List of symbols}
+
+The table below summarizes the symbols used in mathematical and physical expressions throughout this work. 
+The first column lists the symbols, the second provides a description of their meanings, and the third indicates their dimensions. 
+Dimensions are expressed as combinations of the fundamental quantities: length (\(\mathrm{L}\)), mass (\(\mathrm{M}\)), time (\(\mathrm{T}\)), temperature (\(\Theta\)), amount of substance (\(\mathrm{N}\)), and electric current (\(\mathrm{I}\)).
+
+\printunsrtglossary[
+  type=symbols,
+  style=fstlong3col,
+  numberedsection=false,
+  nonumberlist=true,
+]
+
+\section*{Sub- and superscripts}
+
+\begin{multicols}{2}
+  \printunsrtglossary[
+    type=scripts,
+    style={fstmcol},
+    numberedsection=false,
+    nonumberlist=true
+]
+\end{multicols}
+
+\section*{Abbreviations}
+
+\printunsrtglossary[
+  type=abbreviations,
+  style={fstlong2col},
+  numberedsection=false,
+  nonumberlist=true,
+]
+
+\endgroup
+\cleardoublepage
