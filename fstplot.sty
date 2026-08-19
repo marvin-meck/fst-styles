@@ -42,7 +42,8 @@
 
 % Conditional package loading
 \ifsansmath
-  \RequirePackage{sansmath}
+  % \RequirePackage{sansmath}
+  \RequirePackage{sansmathfonts}
 \fi
 
 % Settings
@@ -79,10 +80,10 @@
     % every axis/.style={semithick},
   },
   /pgfplots/FstFontStyle1/.append style={
-    /tikz/font=\sansmath\sffamily
+    /tikz/font=\sffamily
   },
   /pgfplots/FstFontStyle2/.append style={
-    /tikz/font=\sansmath\sffamily\itshape
+    /tikz/font=\sffamily\itshape
   }
 }
 
@@ -94,10 +95,17 @@
 }
 
 \ifsansmath
+  \tikzset{every picture/.style={/utils/exec={\renewcommand{\mathup}[1]{\mathsf{##1}}\sffamily}}}
   \pgfplotsset{%
     every axis/.append style={%
-      FstFontStyle2
+      FstFontStyle1
     }
+  % \pgfplotsset{
+  %   title style={note font=FstFontStyle1},
+  %   label style={note font=FstFontStyle1},
+  %   ticklabel style={note font=FstFontStyle1}
+  %   legend style={note font=FstFontStyle1}
+  % }
 }
 \fi 
 

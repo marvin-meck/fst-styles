@@ -124,6 +124,37 @@
 
 \providecommand{\titlepagestyle}{empty}
 
+\newcommand*{\@degree}{Doktor-Ingenieurs}
+\newcommand*{\@degreeshort}{Dr.-Ing.}
+
+\newcommand*{\@posttitle}{%
+  \ifaccepted{%
+    Vom Fachbereich Maschinenbau\linebreak
+    an der Technischen Universität Darmstadt\linebreak
+    zur Erlangung des Grades eines
+  }\else{
+    Dem Fachbereich Maschinenbau\linebreak
+    an der Technischen Universität Darmstadt\linebreak
+    zur Erlangung des Grades eines
+  }
+  \fi
+}
+
+\newcommand*{\@presubject}{%
+  \ifaccepted{%
+    genehmigte
+  }\else{
+    vorgelegte
+  }
+  \fi
+}
+
+\newcommand*{\@prename}{vorgelegt von}
+\newcommand*{\@postname}{%
+  geboren am {\@dateofbirth{}}\linebreak
+  in {\@placeofbirth{}}%
+}
+
 \providecommand{\TUDaTitle}{%
     \setparsizes{\z@}{\z@}{\z@\@plus 1fil}\par@updaterelative
     \begin{center}
@@ -134,33 +165,19 @@
     {\ifx\@subtitle\@empty\else{\@subtitle\par}\fi}%
    \vspace{\dimexpr 3\bigskipamount\relax}
     
-    \ifaccepted{
-      \large
-      Vom Fachbereich Maschinenbau\linebreak
-      an der Technischen Universität Darmstadt\linebreak
-      zur Erlangung des Grades eines\vspace{\bigskipamount}\linebreak
-      Doktor-Ingenieurs\linebreak
-      (Dr.-Ing.)\vspace{\dimexpr 3\bigskipamount\relax}\linebreak
-      genehmigte\vspace{\bigskipamount}\linebreak
-      {\lsstyle\Large\textsc{\@subject}}\vspace{\dimexpr 2\bigskipamount\relax}\linebreak
-    }
-    \else{
-      \large
-      Dem Fachbereich Maschinenbau\linebreak
-      an der Technischen Universität Darmstadt\linebreak
-      zur Erlangung des Grades eines\vspace{\bigskipamount}\linebreak
-      Doktor-Ingenieurs\linebreak
-      (Dr.-Ing.)\vspace{\dimexpr 3\bigskipamount\relax}\linebreak
-      eingereichte\bigskip\linebreak
-      {\lsstyle\Large\textsc{\@subject}}\vspace{\dimexpr 2\bigskipamount\relax}\par
-    }
-    \fi
     {
       \large
-      vorgelegt von\vspace{\bigskipamount}\linebreak
+      \@posttitle\vspace{\bigskipamount}\linebreak
+      \@degree\linebreak
+      (\@degreeshort)\vspace{\dimexpr 3\bigskipamount\relax}\linebreak
+      \@presubject\vspace{\bigskipamount}\linebreak
+      {\lsstyle\Large\textsc{\@subject}}\vspace{\dimexpr 2\bigskipamount\relax}\par
+    }
+    {
+      \large
+      \@prename\vspace{\bigskipamount}\linebreak
       {\textbf\@author{}}\vspace{\bigskipamount}\linebreak
-      geboren am {\@dateofbirth{}}\linebreak
-      in {\@placeofbirth{}}
+      \@postname
     }
     \vfill
 
@@ -190,13 +207,18 @@
   }%
 }
 
+\providecommand{\@CiteAs}{%
+  \@author\ (\DTMfetchyear{exam}): "\@title{}". 
+  PhD thesis\ifaccepted\relax\else (under review)\fi. 
+  Technische Universität Darmstadt.%
+}
+
 \providecommand{\CiteAs}{%
   \parbox{\textwidth}{%
     \sffamily
     \textbf{When referencing this work, please cite as:}\par\medskip
     \raggedright
-    \@author\ (\DTMfetchyear{exam}): "\@title{}". 
-    PhD thesis (under review). Technische Universität Darmstadt. 
+    \@CiteAs
   }%
 }
 
